@@ -19,10 +19,10 @@ describe("The sessions page", () => {
     
     // validate that the buttons to filter by day exist
 
-    cy.get("[data-cy=AllSessions]");
-    cy.get("[data-cy=Wednesday]");
-    cy.get("[data-cy=Thursday]");
-    cy.get("[data-cy=Friday]");
+    cy.get("@AllSessionsBtn");
+    cy.get("@WednesdayBtn");
+    cy.get("@ThursdayBtn");
+    cy.get("@FridayBtn");
   });
   // wednesday sessions
   it("should filter sessions and only display wednesday sessions when wednesday Button is clicked", () => {
