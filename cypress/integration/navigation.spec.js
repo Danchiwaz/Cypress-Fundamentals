@@ -4,8 +4,7 @@
 
 describe("Navigation", () =>{
     it("Should navigate to conference page", () =>{
-        cy.visit("/conference")
-        cy.get("h1").contains("View Sessions").click();
+        cy.ClickViewSessions();
 
         cy.url().should("include","/sessions");
     })

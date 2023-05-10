@@ -83,16 +83,15 @@ const thursdaySessionData = {
 describe("The sessions page", () => {
   // before each function and defining aliases 
   beforeEach(() => {
-    cy.visit("/conference");
-    cy.get("h1").contains("View Sessions").click();
+    cy.ClickViewSessions();
     cy.url().should("include", "/sessions");
 
     // define the aliases in before each function 
 
-    cy.get("[data-cy=AllSessions]").as("AllSessionsBtn");
-    cy.get("[data-cy=Wednesday]").as("WednesdayBtn");
-    cy.get("[data-cy=Thursday]").as("ThursdayBtn")
-    cy.get("[data-cy=Friday]").as("FridayBtn")
+    cy.dataCy("AllSessions").as("AllSessionsBtn");
+    cy.dataCy("Wednesday").as("WednesdayBtn");
+    cy.dataCy("Thursday").as("ThursdayBtn")
+    cy.dataCy("Friday").as("FridayBtn")
 
   })
   it("should navigate to conference sessions page and view day filter buttons", () => {
@@ -110,40 +109,49 @@ describe("The sessions page", () => {
     // cy.intercept("POST", "http://localhost:4000/graphql").as("getSessionInfo");
     
     cy.get("@WednesdayBtn").click();
-    // cy.wait(500)
-    // cy.wait('@getSessionInfo');
-
-    // assertions 
-    cy.get("[data-cy=day]").contains("Wednesday").should("be.visible");
-    cy.get("[data-cy=day]").contains("Thursday").should("not.exist");
-    cy.get("[data-cy=day]").contains("Friday").should("not.exist");
+    cy.dataCy("day").contains("Wednesday").should("be.visible");
+    cy.dataCy("day").contains("Thursday").should("not.exist");
+    cy.dataCy("day").contains("Friday").should("not.exist");
   });
   // thursday sessions
   it("should filter sessions and only display thursday sessions when thursday Button is clicked", () => {
 
-     cy.intercept("POST", "http://localhost:4000/graphql", {
-      fixture:"sessions.json"
-     }).as("getSessionInfo");
+     cy.intercept("POST", "http://localhost:4000/graphql",thursdaySessionData).as("getSessionInfo");
     cy.get("@ThursdayBtn").click();
-    // setting the wait period 
     cy.wait('@getSessionInfo');
 
-    cy.get("[data-cy=day]").should("have.length", 4)
+    cy.dataCy("day").should("have.length", 4)
 
 
 
-    cy.get("[data-cy=day]").contains("Wednesday").should("not.exist");
-    cy.get("[data-cy=day]").contains("Thursday").should("be.visible");
-    cy.get("[data-cy=day]").contains("Friday").should("not.exist");
+    cy.dataCy("day").contains("Wednesday").should("not.exist");
+    cy.dataCy("day").contains("Thursday").should("be.visible");
+    cy.dataCy("day").contains("Friday").should("not.exist");
   });
   // thursday sessions
   it("should filter sessions and only display friday sessions when friday Button is clicked", () => {
+    cy.intercept("POST", "http://localhost:4000/graphql", {fixture:"sessions.json"}).as("getFridayInfo")
     cy.get("@FridayBtn").click();
-    cy.get("[data-cy=day]").contains("Friday").should("be.visible");
-    cy.get("[data-cy=day]").contains("Wednesday").should("not.exist");
-    cy.get("[data-cy=day]").contains("Thursday").should("not.exist");
+    cy.wait(5000);
+    cy.wait("@getFridayInfo");
+    cy.dataCy("day").contains("Friday").should("be.visible");
+    cy.dataCy("day").contains("Wednesday").should("not.exist");
+    cy.dataCy("day").contains("Thursday").should("not.exist");
   });
+
+  // get all the session 
+  it("it should get all the sessions when All sessions button is licked", () =>{
+    cy.intercept("POST", "http://localhost:4000/graphql").as("getSessionsInfo");
+    cy.get("@AllSessionsBtn").click();
+    cy.wait("@getSessionsInfo");
+    cy.screenshot()
+
+    cy.dataCy("day").contains("Friday").should("be.visible");
+    cy.dataCy("day").contains("Wednesday").should("be.visible");
+    cy.dataCy("day").contains("Thursday").should("be.visible");
 });
+
+})
 
 
 // Retry-ability - cypress only retries commands that query the DOM 
@@ -172,6 +180,11 @@ describe("The sessions page", () => {
 // Don't use stubbed responses for server-side render architecture. 
 // Avoid stubs for critical paths like login 
 // the intercept stub the server response 
+
+// add the fixture inform of json format 
+// cy.request() => Makes a HTTP request and reaches the server
+// => requires that the server sends a  responds .it can time out waiting for the server to respond.
+// => cy.request() will only run assertions you have chained once and will not retry.
 
 
 
