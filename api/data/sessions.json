@@ -3756,6 +3756,13 @@
       "level": "New Session level",
       "day": "Thursday",
       "id": "440be379-9595-4411-b3bf-19ceb099ffe9"
+    },
+    {
+      "title": "New session title",
+      "description": "This is the session Description",
+      "level": "New Session level",
+      "day": "Thursday",
+      "id": "6d305175-6401-4fb2-af71-343ff4776e9b"
     }
   ]
 }

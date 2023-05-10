@@ -132,8 +132,8 @@ describe("The sessions page", () => {
   it("should filter sessions and only display friday sessions when friday Button is clicked", () => {
     cy.intercept("POST", "http://localhost:4000/graphql", {fixture:"sessions.json"}).as("getFridayInfo")
     cy.get("@FridayBtn").click();
-    cy.wait(5000);
     cy.wait("@getFridayInfo");
+    cy.dataCy("day").should("have.length", 4)
     cy.dataCy("day").contains("Friday").should("be.visible");
     cy.dataCy("day").contains("Wednesday").should("not.exist");
     cy.dataCy("day").contains("Thursday").should("not.exist");
@@ -186,6 +186,9 @@ describe("The sessions page", () => {
 // => requires that the server sends a  responds .it can time out waiting for the server to respond.
 // => cy.request() will only run assertions you have chained once and will not retry.
 
+
+
+// the custom commands are addded in the support folder and commands.js file 
 
 
 // Air, car and hotel 
